@@ -3,6 +3,7 @@ var dotenv = require('dotenv');
 var express = require('express');
 var http = require('http');
 var Firebase = require('firebase');
+var twilio = require('twilio');
 
 // Express server setup
 var app = express();
@@ -18,6 +19,9 @@ ref.authWithCustomToken(process.env.FIREBASE_SECRET, function(error, authData) {
     console.log("Login Succeeded!", authData);
   }
 });
+
+// Authenticate Twilio and create Twilio client
+var twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
 // Listen for new texts being created on Firebase
 var textsRef = ref.child('texts');
