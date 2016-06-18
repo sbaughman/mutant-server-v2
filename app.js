@@ -1,4 +1,5 @@
 // Create references for libraries
+var dotenv = require('dotenv');
 var express = require('express');
 var http = require('http');
 var Firebase = require('firebase');
@@ -6,10 +7,11 @@ var Firebase = require('firebase');
 // Express server setup
 var app = express();
 var server = http.createServer(app);
+dotenv.load();
 
 // Authenticate Firebase
-var ref = new Firebase("https://<YOUR-FIREBASE-APP>.firebaseio.com/");
-ref.authWithCustomToken(AUTH_TOKEN, function(error, authData) {
+var ref = new Firebase(process.env.FIREBASE_URL);
+ref.authWithCustomToken(process.env.FIREBASE_SECRET, function(error, authData) {
   if (error) {
     console.log("Login Failed!", error);
   } else {
