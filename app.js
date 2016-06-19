@@ -16,7 +16,7 @@ ref.authWithCustomToken(process.env.FIREBASE_SECRET, function(error, authData) {
   if (error) {
     console.log("Login Failed!", error);
   } else {
-    console.log("Login Succeeded!", authData);
+    console.log("Login Succeeded!");
   }
 });
 
@@ -26,7 +26,16 @@ var twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN)
 // Listen for new texts being created on Firebase
 var textsRef = ref.child('texts');
 textsRef.on('child_added', function(snapshot) {
-  console.log(snapshot.val());
+  var text = snapshot.val();
+  twilioClient.messages.create({
+    body: 'Hello from Node',
+    to: '+12708711940',  // Text this number
+    from: '+12705153071' // From a valid Twilio number
+  }, function(err, message) {
+    if(err) {
+        console.error(err.message);
+    }
+  });
 })
 
 server.listen(3030, function() {
