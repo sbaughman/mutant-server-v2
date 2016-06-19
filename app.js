@@ -4,6 +4,7 @@ var express = require('express');
 var http = require('http');
 var Firebase = require('firebase');
 var twilio = require('twilio');
+var mailgun = require('mailgun-js');
 
 // Express server setup
 var app = express();
@@ -37,6 +38,9 @@ textsRef.on('child_added', function(snapshot) {
     }
   });
 });
+
+// Authenticate mailgun and create mailgun client
+var mailgunClient = mailgun(process.env.MAILGUN_KEY, process.env.MAILGUN_DOMAIN);
 
 server.listen(3030, function() {
   console.log('listening on http://localhost:3030...');
