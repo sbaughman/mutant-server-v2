@@ -40,7 +40,25 @@ textsRef.on('child_added', function(snapshot) {
 });
 
 // Authenticate mailgun and create mailgun client
-var mailgunClient = mailgun(process.env.MAILGUN_KEY, process.env.MAILGUN_DOMAIN);
+var mailgunClient = mailgun({apiKey: process.env.MAILGUN_KEY, domain: process.env.MAILGUN_DOMAIN});
+
+// Send email when new email added on Firebase
+var emailsRef = ref.child('emails');
+emailsRef.on("child_added", function(snapshot) {
+  var email = snapshot.val();
+  var emailData = {
+    from: '<postmaster@'  + process.env.MAILGUN_DOMAIN + '>',
+    to: email.emailAddress,
+    subject: 'Welcome to Mutant Office Hours',
+    text: 'Thanks for signing up!'
+  };
+  mailgunClient.messages().send(emailData, function(error, body) {
+    console.log(body);
+    if (error) {
+      console.log(error);
+    };
+  });
+});
 
 server.listen(3030, function() {
   console.log('listening on http://localhost:3030...');
